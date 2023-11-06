@@ -1,0 +1,168 @@
+--Var
+local tpservice= game:GetService("TeleportService")
+local plr = game.Players.LocalPlayer
+local target = game:GetService("Players").LocalPlayer
+local message = "Rejoin.."
+local gives_message = true
+--TPWorld
+function TP_World1()
+    _G.TP_Ser = true
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelMain")
+end
+function TP_World2()
+    _G.TP_Ser = true
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")	
+end
+function TP_World3()
+    _G.TP_Ser = true
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou")
+end
+--varworld
+local World = game.PlaceId
+--checkworld
+if World == 2753915549 then
+    Old_World = true
+elseif World == 4442272183 then
+    New_World = true
+elseif World == 7449423635 then
+    Three_World = true
+end 
+--var
+local TPToggle = true
+
+function TP2(P1)
+    while TPToggle == true do
+        local Distance = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+        if Distance < 0 then
+            Speed = 365
+        end
+        game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
+            {CFrame = P1}
+        ):Play()
+        _G.Clip = true
+        wait(Distance/Speed)
+        _G.Clip = false
+    end
+end
+
+function toggleTP()
+    TPToggle = not TPToggle
+end
+
+--FunctionNoclip
+local function Noclip()
+    while true do
+        if _G.Clip == true then
+            if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+                local Noclip = Instance.new("BodyVelocity")
+                Noclip.Name = "BodyClip"
+                Noclip.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+                Noclip.MaxForce = Vector3.new(100000,100000,100000)
+                Noclip.Velocity = Vector3.new(0,0,0)
+            end
+            for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = false    
+                end
+            end
+        end
+        wait()
+    end
+end
+
+getgenv().TPPlace = "string"
+local TPPlace = getgenv().TPPlace
+
+local DiscordLib = loadstring(game:HttpGet"https://gist.githubusercontent.com/TheBeautiFullBeach/406a6956595916f2abaaeef8478c0164/raw/ae1362d7ea85fe289d627790521dca16fc3c8d55/PattayaBeach")()
+
+local win = DiscordLib:Window("Lazium Blox Fruit")
+
+local serv = win:Server("Main","")
+
+
+local Island_Tab = serv:Channel("Teleport", "http://www.roblox.com/asset/?id=7040387707")
+local World_Tab = serv:Channel("World", "http://www.roblox.com/asset/?id=7040387707")
+local Misc_Tab = serv:Channel("Misc", "http://www.roblox.com/asset/?id=7040387707")
+
+Island_Tab:Label("Map")
+
+Island_Tab:Toggle("Start Tween", false, function(state)
+    if state then
+        if TPPlace == "Colosseum" then
+            TP2(CFrame.new(-1831, 45.82050323486328, 1364))
+        elseif TPPlace == "Flamingo's Mansion" then
+            TP2(CFrame.new(-389, 331.8863525390625, 612))
+        elseif TPPlace == "Kingdom of rose" then
+            TP2(CFrame.new(-392, 123.18550872802734, 1039))
+        elseif TPPlace == "Cafe" then
+            TP2(CFrame.new(-471, 72.98555755615234, -88))
+        elseif TPPlace == "Mansion" then
+            TP2(CFrame.new(-12541, 331.7884216308594, -7922))
+        elseif TPPlace == "Castle on the sea" then
+            TP2(CFrame.new(-5513, 313.7912902832031, -2899))
+        elseif TPPlace == "Hydra" then
+            TP2(CFrame.new(-471, 72.98555755615234, -88))
+        elseif TPPlace == "Areana" then
+            TP2(CFrame.new(-471, 72.98555755615234, -88))
+        end
+    else
+        TPToggle = false
+        wait(0.1)
+        TPToggle = true
+        if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
+        end
+    end
+end)
+if Old_World then
+    local drop =
+    Island_Tab:Dropdown(
+    "TP Place",
+    {"Colosseum", "Flamingo's Mansion", "Kingdom of rose", "Cafe"},
+    function(W1)
+        getgenv().TPPlace = W1
+    end
+    ) 
+elseif New_World then
+    local drop =
+    Island_Tab:Dropdown(
+    "TP Place",
+    {"Colosseum", "Flamingo's Mansion", "Kingdom of rose", "Cafe"},
+    function(W2)
+        getgenv().TPPlace = W2
+    end
+    )
+elseif Three_World then
+   local drop =
+    Island_Tab:Dropdown(
+    "TP Place",
+    {"Mansion", "Castle on the sea", "Hydra", "Areana",},
+    function(W3)
+        getgenv().TPPlace = W3
+    end
+    )
+end 
+
+Island_Tab:Button("Stop_Tween", function()
+    TPToggle = false
+    wait(0.1)
+    TPToggle = true
+end)
+
+World_Tab:Button("Teleport to World 1", function()              
+    TP_World1()
+end)
+World_Tab:Button("Teleport to World 2", function()
+    TP_World2()
+end)
+
+World_Tab:Button("Teleport to World 3", function()
+    TP_World3()
+end)
+
+Misc_Tab:Button("Rejoin", function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+    game:GetService("Players").LocalPlayer:Kick("Rejoin..")
+end)
