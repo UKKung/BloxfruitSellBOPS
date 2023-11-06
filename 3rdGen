@@ -1,0 +1,329 @@
+--Varible
+local World = game.PlaceId
+
+--GetString
+getgenv().Place = "string"
+local Place = getgenv().Place
+
+--Check Place
+if World == 2753915549 then
+    print("FirstWorld = true")
+    FirstWorld = true
+elseif World == 4442272183 then
+    print("SecondWorld = true")
+    SecondWorld = true
+elseif World == 7449423635 then
+    print("ThirdWorld = true")
+    ThirdWorld = true
+end
+
+--TPWorld
+function TP_World1()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelMain")
+end
+function TP_World2()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")	
+end
+function TP_World3()
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou")
+end
+
+--Script
+function TP2(P1)
+    while TPToggle == true do
+    local Distance = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    if Distance >= 0 then
+      Speed = 365
+    end
+    game:GetService("TweenService"):Create(
+    game.Players.LocalPlayer.Character.HumanoidRootPart,
+    TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear),
+    {CFrame = P1}
+    ):Play()
+    _G.Clip = true
+    wait(Distance/Speed)
+    _G.Clip = false
+end
+end
+
+function toggleTP()
+    TPToggle = not TPToggle
+end
+
+local function Noclip()
+    while true do
+        if _G.Clip == true then
+            if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+                local Noclip = Instance.new("BodyVelocity")
+                Noclip.Name = "BodyClip"
+                Noclip.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+                Noclip.MaxForce = Vector3.new(100000,100000,100000)
+                Noclip.Velocity = Vector3.new(0,0,0)
+            end
+            for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.CanCollide = false    
+                end
+            end
+        end
+        wait()
+    end
+end
+
+--UI Loader
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+--Window
+local Window = Fluent:CreateWindow({
+    Title = "SellBounty 0.4",
+    SubTitle = "by ktzmm",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = false, -- The blur may be detectable, setting this to false disables blur entirely
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+})
+
+--Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "home" }),
+    Wold = Window:AddTab({ Title = "World", Icon = "globe-2" }),
+    Misc = Window:AddTab({ Title = "Misc", Icon = "more-horizontal" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+--Fluent Options
+local Options = Fluent.Options
+
+do
+    local Start = Tabs.Main:AddToggle("Start", {Title = "Start", Default = false })
+    Start:OnChanged(function(state)
+        if state then
+            if getgenv().Place == "Colosseum" then
+                TP2(CFrame.new(-1831, 45.82050323486328, 1364))
+            elseif getgenv().Place == "Flamingo's Mansion" then
+                TP2(CFrame.new(-389, 331.8863525390625, 612))
+            elseif getgenv().Place == "Kingdom of rose" then
+                TP2(CFrame.new(-392, 123.18550872802734, 1039))
+            elseif getgenv().Place == "Cafe" then
+                TP2(CFrame.new(-471, 72.98555755615234, -88))
+            elseif getgenv().Place == "Mansion" then
+                TP2(CFrame.new(-12541, 331.7884216308594, -7922))
+            elseif getgenv().Place == "Castle on the sea" then
+                TP2(CFrame.new(-5513, 313.7912902832031, -2899))
+            elseif getgenv().Place == "Hydra" then
+                TP2(CFrame.new(-471, 72.98555755615234, -88))
+            elseif getgenv().Place == "Areana" then
+                TP2(CFrame.new(-471, 72.98555755615234, -88))
+            end
+        else
+            wait(0.1)
+            if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+                game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear),{CFrame = P1}):Cancel()
+                _G.Clip = false
+                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
+                TPToggle = false
+                wait(0.1)
+                TPToggle = true
+            end
+        end
+    end)
+
+    if FirstWorld == true then
+        local PlaceSelected = Tabs.Main:AddDropdown("PlaceSelectede", {
+            Title = "SelectPlace",
+            Values = {"Colosseum","Flamingo's Mansion"},
+            Multi = false,
+            Default = 1,
+        })
+
+        PlaceSelected:OnChanged(function(W1)
+            getgenv().Place = W1
+            print("Dropdown changed:", W1)
+        end)
+    elseif SecondWorld == true then
+        local PlaceSelected = Tabs.Main:AddDropdown("PlaceSelectede", {
+            Title = "SelectPlace",
+            Values = {"Colosseum","Flamingo's Mansion"},
+            Multi = false,
+            Default = 1,
+        })
+
+        PlaceSelected:OnChanged(function(W2)
+            getgenv().Place = W2
+            print("Dropdown changed:", W2)
+        end)
+    elseif ThirdWorld == true then
+        local PlaceSelected = Tabs.Main:AddDropdown("PlaceSelectede", {
+            Title = "SelectPlace",
+            Values = {"Colosseum","Flamingo's Mansion"},
+            Multi = false,
+            Default = 1,
+        })
+
+        PlaceSelected:OnChanged(function(W3)
+            getgenv().Place = W3
+            print("Dropdown changed:", W3)
+        end)
+    end
+
+    Tabs.Main:AddButton({
+        Title = "Stop Tween",
+        Description = "Very important button",
+        Callback = function()
+            Window:Dialog({
+                Title = "Stop Tween?",
+                Content = "Are you sure?",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Cancelled")
+                            Fluent:Notify({
+                                Title = "Tween Cancelled",
+                                Content = "Tween Is Cancelled",
+                                Duration = 5 -- Set to nil to make the notification not disappear
+                            })                        
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Continuted")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    Tabs.Wold:AddButton({
+        Title = "Main",
+        Description = "Teleport To FirstWorld",
+        Callback = function()
+            Window:Dialog({
+                Title = "Teleport",
+                Content = "Are you sure?",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Teleported")
+                            TP_World1()
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled")
+                        end
+                    }
+                }
+            })
+        end
+    })
+    Tabs.Wold:AddButton({
+        Title = "Dressrosa",
+        Description = "Teleport To SecondWorld",
+        Callback = function()
+            Window:Dialog({
+                Title = "Teleport",
+                Content = "Are you sure?",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Teleported")
+                            TP_World2()
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled")
+                        end
+                    }
+                }
+            })
+        end
+    })
+    Tabs.Wold:AddButton({
+        Title = "Zou",
+        Description = "Teleport To ThirdWorld",
+        Callback = function()
+            Window:Dialog({
+                Title = "Teleport",
+                Content = "Are you sure?",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Teleported")
+                            TP_World3()
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    Tabs.Misc:AddButton({
+        Title = "Rejoin",
+        Description = "Rejoin The Server",
+        Callback = function()
+            Window:Dialog({
+                Title = "Teleport",
+                Content = "Are you sure?",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Teleported")
+                            game:GetService("TeleportService"):Teleport(game.PlaceId, game:GetService("Players").LocalPlayer)
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled")
+                        end
+                    }
+                }
+            })
+        end
+    })
+end
+
+
+
+--Settings
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:IgnoreThemeSettings()
+
+SaveManager:SetIgnoreIndexes({})
+
+InterfaceManager:SetFolder("ktzmm")
+SaveManager:SetFolder("ktzmm/bloxfruitspecial")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Content loaded",
+    Content = "The content has been loaded.",
+    Duration = 8
+})
+
+SaveManager:LoadAutoloadConfig()
