@@ -1,0 +1,154 @@
+--Varible
+local World = game.PlaceId
+local TPService = game:GetService("TeleportService")
+local LPlr = game.Players.LocalPlayer
+local TargetP = game:GetService("Players").LocalPlayer
+local RJMessage = "Rejoin.."
+local TPToggle = true
+--GetString
+getgenv().Place = "string"
+local Place = getgenv().Place
+--GetSetting
+_G.StartTween = false
+--Check Place
+if World == 2753915549 then
+    FirstWorld = true
+elseif World == 4442272183 then
+    SecondWorld = true
+elseif World == 7449423635 then
+    ThirdWorld = true
+end
+--FunctionTween
+function TP2(P1)
+    while TPToggle do
+        local Distance = (P1.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+        if Distance >= 0 then
+            Speed = 365
+        end
+        game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear),
+        {CFrame = P1}
+        ):Play()
+        _G.Clip = true
+        wait(Distance / Speed)
+        _G.Clip = false
+    end
+end
+function toggleTP()
+    TPToggle = not TPToggle
+end
+--FunctionNoclip
+spawn(function()
+pcall(function()
+while wait() do
+    if _G.Clip == true then
+        if not game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+            local Noclip = Instance.new("BodyVelocity")
+            Noclip.Name = "BodyClip"
+            Noclip.Parent = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+            Noclip.MaxForce = Vector3.new(100000,100000,100000)
+            Noclip.Velocity = Vector3.new(0,0,0)
+        end
+    end
+end
+end)
+end)
+spawn(function()
+pcall(function()
+while wait() do
+    if _G.Clip == true then
+        for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+    end
+end
+end)
+end)
+--FunctionInstanlyStopTween
+function StopTween(target)
+    if not target then
+        _G.StopTween = true
+        wait()
+        TP2(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame)
+        wait()
+        if game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
+            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart:FindFirstChild("BodyClip"):Destroy()
+        end
+        _G.StopTween = false
+        _G.Clip = false
+    end
+end
+--UI loader
+local DiscordLib = loadstring(game:HttpGet"https://raw.githubusercontent.com/dawid-scripts/UI-Libs/main/discord%20lib.txt")()
+--Window
+local win = DiscordLib:Window("SellBounty 0.4 - ktzmm")
+
+--Main
+local MainSer = win:Server("Main", "")
+local Main = MainSer:Channel("Main")
+
+if FirstWorld == true then
+    local drop = Main:Dropdown("Select Place",{"Option 1","Option 2","Option 3","Option 4","Option 5"}, function(W1)
+    getgenv().Place = W1
+    end)
+elseif SecondWorld == true then
+    local drop = Main:Dropdown("Select Place",{"Colosseum","Flamingo's Mansion","Option 3","Option 4","Option 5"}, function(W2)
+    getgenv().Place = W2
+    end)
+elseif ThirdWorld == true then
+    local drop = Main:Dropdown("Select Place",{"Option 1","Option 2","Option 3","Option 4","Option 5"}, function(W3)
+    getgenv().Place = W3
+    end)
+end
+
+Main:Toggle(
+"Tween",
+false,
+function(state)
+    if state then
+        if getgenv().Place == "Colosseum" then
+            TP2(CFrame.new(-1831, 45.82050323486328, 1364))
+        elseif getgenv().Place == "Flamingo's Mansion" then
+            TP2(CFrame.new(-389, 331.8863525390625, 612))
+        elseif getgenv().Place == "Kingdom of rose" then
+            TP2(CFrame.new(-392, 123.18550872802734, 1039))
+        elseif getgenv().Place == "Cafe" then
+            TP2(CFrame.new(-471, 72.98555755615234, -88))
+        elseif getgenv().Place == "Mansion" then
+            TP2(CFrame.new(-12541, 331.7884216308594, -7922))
+        elseif getgenv().Place == "Castle on the sea" then
+            TP2(CFrame.new(-5513, 313.7912902832031, -2899))
+        elseif getgenv().Place == "Hydra" then
+            TP2(CFrame.new(-471, 72.98555755615234, -88))
+        elseif getgenv().Place == "Areana" then
+            TP2(CFrame.new(-471, 72.98555755615234, -88))
+        end
+    else
+        TPToggle = false
+        wait(0.1)
+        TPToggle = true
+        StopTween()
+    end
+end
+)
+
+Main:Button("StopTweenInstanly!", function()
+    StopTween()
+    DiscordLib:Notification("TweenStoped", "", "Okay!")
+    TPToggle = false
+    wait(0.1)
+    TPToggle = true
+end)
+
+--Setting
+local Setting = MainSer:Channel("Setting")
+
+--Misc
+local Misc = MainSer:Channel("Misc")
+    Misc:Button("Rejoin", function()
+    TPService:Teleport(World, LPlr)
+    TargetP:Kick(RJMessage)
+end)
